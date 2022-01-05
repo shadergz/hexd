@@ -2,7 +2,7 @@
 
 A simplest hexadecimal file dumper for unix-like systems
 
-![alt text](hexd-image.png "Hexd")
+![alt text](hexd-image.png "hexd")
 
 ## Features
 
