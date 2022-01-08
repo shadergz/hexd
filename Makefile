@@ -1,4 +1,4 @@
-CC=clang
+CC=gcc
 STRIP=strip
 CFLAGS=-Wall -O2 -ffast-math
 CLIBS=-lm

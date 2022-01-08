@@ -19,7 +19,7 @@ static const char program_name[] = "hexd";
 static const char program_version[] = "0.0.2";
 
 static uint8_t conv;
-static uint8_t coll = 16;
+static uint8_t col = 16;
 static uint8_t style = 0;
 
 static uint32_t seek = 0;
@@ -87,8 +87,8 @@ static void help (void)
         "\t\tDump the bytes data in the hexa format\n"
         "\t--seek\\-s\n"
         "\t\tSeek 'N' bytes from the input\n"
-        "\t--coll\\-C\n"
-        "\t\tDefine the size of the collum\n"
+        "\t--col\\-C\n"
+        "\t\tDefine the size of the columm\n"
         "\t--style\\-l\n"
         "\t\tThe output ASCII table style, can be one of them:\n"
         "\t\t0: alpha, 1: alphanumeric, 2: printable, 3: uppercase\n"
@@ -120,7 +120,7 @@ int32_t main (int argc, char **argv)
         {"octal", no_argument, NULL, 'O'},
         {"hexa", no_argument, NULL, 'H'},
         {"seek", required_argument, NULL, 's'},
-        {"coll", required_argument, NULL, 'C'},
+        {"col", required_argument, NULL, 'C'},
         {"style", required_argument, NULL, 'l'},
         {"count", required_argument, NULL, 'c'},
         {"input", required_argument, NULL, 'i'},
@@ -147,7 +147,7 @@ int32_t main (int argc, char **argv)
             seek = (uint32_t) strtoul (optarg, NULL, 0);
             break;
         case 'C':
-            coll = (uint16_t) strtoul (optarg, NULL, 0);
+            col = (uint16_t) strtoul (optarg, NULL, 0);
             break;
         case 'l':
             style = (uint8_t) strtoul (optarg, NULL, 0);
@@ -170,8 +170,8 @@ int32_t main (int argc, char **argv)
                 if (argv[optind])
                     filename = strdup (argv[optind]);
 
-    if (coll < 10 || coll > 24 || (coll % 2))
-        quit ("Invalid collum size (%u)\n", coll);
+    if (col < 10 || col > 24 || (col % 2))
+        quit ("Invalid columm size (%u)\n", col);
     
     if (style >= (sizeof (look_at_me) / sizeof (look_at_me[0]) - 1))
         quit ("Style not found (%u)\n", style);
@@ -191,13 +191,13 @@ int32_t main (int argc, char **argv)
         if ((fseek (file, seek, SEEK_SET)))
             quit ("Can't seek the file \"%s\" to %u position\n", filename, seek);
     
-    table_size = coll * log10 (coll * 2);
+    table_size = col * log10 (col * 2);
     assert ((bytes_table = calloc (table_size, sizeof (char))));
     assert ((ascii_table = calloc (table_size, sizeof (char))));
 
     do {
-        block = count != -1 ? (count > coll 
-            ? (coll % count) ? coll : count : count) : coll;
+        block = count != -1 ? (count > col 
+            ? (col % count) ? col : count : count) : col;
         memset (bytes_table, 0, table_size);
         if (!(bread = fread (bytes_table, 1, 
             block, file)))
@@ -208,13 +208,13 @@ int32_t main (int argc, char **argv)
             if (!index)
                 /* Display the offset */
                 printf ("%08x: ", current_offset);
-            printf (fmt, (uint8_t)bytes_table[index], ((index + 1 == coll / 2) ? 2 : 1), ' ');
+            printf (fmt, (uint8_t)bytes_table[index], ((index + 1 == col / 2) ? 2 : 1), ' ');
             
             /* Saving the ascii character representation in the ascii table */
             ascii_table[index] = (look (bytes_table[index]) ? bytes_table[index] : '.');
         }
-        for (; index < coll; index++) {
-            printf ("%*c", ((index + 1 == coll / 2) ? 4 : 3), ' ');
+        for (; index < col; index++) {
+            printf ("%*c", ((index + 1 == col / 2) ? 4 : 3), ' ');
             ascii_table[index] = ' ';
         }
 
